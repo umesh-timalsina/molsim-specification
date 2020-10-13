@@ -21,5 +21,7 @@
     "mocha": "^5.2.0",
     "webgme": "^2.23.0"
   },
-  "dependencies": {}
+  "dependencies": {
+    "webgme-bindings": "^1.2.0"
+  }
 }

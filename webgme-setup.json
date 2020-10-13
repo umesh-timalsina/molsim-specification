@@ -1,4 +1,21 @@
 {
-  "components": {},
-  "dependencies": {}
+  "components": {
+    "plugins": {
+      "createSystems": {
+        "src": "src/plugins/createSystems",
+        "test": "test/plugins/createSystems"
+      }
+    },
+    "routers": {}
+  },
+  "dependencies": {
+    "plugins": {},
+    "routers": {
+      "BindingsDocs": {
+        "project": "webgme-bindings",
+        "path": "node_modules/webgme-bindings/src/routers/BindingsDocs",
+        "mount": "bindings-docs"
+      }
+    }
+  }
 }
