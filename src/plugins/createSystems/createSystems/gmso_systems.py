@@ -1,24 +1,21 @@
-import numpy as np
 import mbuild as mb
-import mbuild.recipes
-import unyt as u
 import foyer
 
-from gmso.core.box import Box
-from gmso.core.topology import Topology
-from gmso.core.element import Hydrogen, Oxygen
-from gmso.core.atom import Atom
-from gmso.core.bond import Bond
-from gmso.core.angle import Angle
-from gmso.core.atom_type import AtomType
+
 from gmso.core.forcefield import ForceField
-from gmso.external import from_mbuild, from_parmed
-from gmso.tests.utils import get_path
+from gmso.external import from_mbuild
 from gmso.utils.io import get_fn
 from gmso.external import from_parmed
 
 
 class GMSOSystems:
+
+    @staticmethod
+    def systems():
+        methods = [GMSOSystems.ar_system, GMSOSystems.typed_ethane]
+        for method in methods:
+            yield method()
+
     @staticmethod
     def ar_system():
         ar = mb.Compound(name='Ar')
@@ -46,9 +43,3 @@ class GMSOSystems:
         top = from_parmed(pmd_ethane)
         top.name = 'ethane'
         return top
-
-
-if __name__ == '__main__':
-    typed_ethane = GMSOSystems.typed_ethane()
-    for btype in typed_ethane.bond_types:
-        print('>>', btype.name)

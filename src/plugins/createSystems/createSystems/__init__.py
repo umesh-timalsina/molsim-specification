@@ -19,6 +19,8 @@ formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(messag
 handler.setFormatter(formatter)
 logger.addHandler(handler)
 
+DEFAULT_ATTR = 'pyJSON'
+
 
 class createSystems(PluginBase):
     def main(self):
@@ -30,7 +32,8 @@ class createSystems(PluginBase):
 
         logger.info('ActiveNode at "{0}" has name {1}'.format(core.get_path(active_node), name))
 
-        self.convert_to_nodes(GMSOSystems.typed_ethane())
+        for system in GMSOSystems.systems():
+            self.convert_to_nodes(system)
 
         commit_info = self.util.save(root_node, self.commit_hash, 'master', 'Python plugin updated the model')
         logger.info('committed :{0}'.format(commit_info))
@@ -54,6 +57,7 @@ class createSystems(PluginBase):
             potential_attr='_atom_types',
             target='AtomType'
         )
+        self.logger.info(f'Added {len(atom_type_nodes)} AtomTypes')
 
         bond_type_nodes = self._add_potential_nodes(
             system,
@@ -62,12 +66,16 @@ class createSystems(PluginBase):
             target='BondType'
         )
 
+        self.logger.info(f'Added {len(bond_type_nodes)} BondTypes')
+
         angle_type_nodes = self._add_potential_nodes(
             system,
             topology,
             potential_attr='_angle_types',
             target='AngleType'
         )
+
+        self.logger.info(f'Added {len(angle_type_nodes)} AngleTypes')
 
         dihedral_type_nodes = self._add_potential_nodes(
             system,
@@ -76,12 +84,16 @@ class createSystems(PluginBase):
             target='DihedralType'
         )
 
+        self.logger.info(f'Added {len(dihedral_type_nodes)} DihedralTypes')
+
         improper_type_nodes = self._add_potential_nodes(
             system,
             topology,
             potential_attr='_improper_types',
             target='ImproperType'
         )
+
+        self.logger.info(f'Added {len(improper_type_nodes)} ImproperTypes')
 
         for atom in topology.sites:
             atom_nodes[id(atom)] = self.core.create_node({
@@ -159,18 +171,26 @@ class createSystems(PluginBase):
                 'parent': parent,
                 'base': self.META.get(target)
             })
-            for key in self.core.get_valid_attribute_names(potential_node):
-                json_dict = json.loads(potential_type.json(by_alias=True))
-                if key in json_dict:
-                    self.core.set_attribute(
-                        potential_node,
-                        name=key,
-                        value=str(json_dict.get(key))
-                    )
+            self._assign_attributes_to_node(
+                py_object=potential_type,
+                target_node=potential_node
+            )
 
-            potential_type_nodes[potential_type] = potential_attr
+            potential_type_nodes[potential_type] = potential_node
 
         return potential_type_nodes
+
+    def _assign_attributes_to_node(self, py_object, target_node):
+        for key in self.core.get_valid_attribute_names(target_node):
+            json_str = py_object.json(by_alias=True)
+            json_dict = json.loads(json_str)
+            if key in json_dict:
+                self.core.set_attribute(
+                    target_node,
+                    name=key,
+                    value=str(json_dict.get(key))
+                )
+            self.core.set_attribute(target_node, name=DEFAULT_ATTR, value=json_str)
 
     def _add_connection_nodes(self,
                               parent,
@@ -185,12 +205,13 @@ class createSystems(PluginBase):
                 'parent': parent,
                 'base': self.META.get(target)
             })
+            self._assign_attributes_to_node(
+                py_object=connection,
+                target_node=connection_node
+            )
             for atom in atoms:
                 self.core.add_member(
                     node=connection_node,
                     name='connectionMembers',
                     member=atom
                 )
-
-
-
