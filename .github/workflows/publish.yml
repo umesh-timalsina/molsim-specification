@@ -37,6 +37,3 @@ jobs:
           github_token: ${{ secrets.GH_PAGES_DEPLOY_TOKEN }}
           publish_dir: ./public
         if: github.ref == 'refs/heads/main'
-
-
-
