@@ -2,8 +2,11 @@ name: Build and Publish Github Pages
 on:
   push:
     branches:
-      - master
-      - 8-gh-pages
+      - main
+  pull_request:
+    branches:
+      - main
+
 jobs:
   deploy:
     runs-on: ubuntu-18.04
@@ -26,13 +29,14 @@ jobs:
       - name: Copy Repository Content
         run: |
           mkdir public
-          cp -r docs/css docs/index.html report.html public
+          cp -r docs/css docs/logo.jpeg docs/index.html report.html public
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GH_PAGES_DEPLOY_TOKEN }}
           publish_dir: ./public
+        if: github.ref == 'refs/heads/master'
 
 
 
