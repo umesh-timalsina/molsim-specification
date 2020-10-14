@@ -1,17 +1,17 @@
 \documentclass[12pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8x]{inputenc}
+
 \usepackage{titling}
-\usepackage[utf8]{inputenc}
 \usepackage[top=1in, bottom=1in, left=1in, right=1in]{geometry}
 \usepackage{hyperref}
-
-\title{General Purpose Molecular Simulation Object\\ System Requirements Specification (SRS)}
-\author{MoSDeF}
-\date{\today}
-
-\usepackage[table]{xcolor}
-
 \usepackage{natbib}
 \usepackage{graphicx}
+\usepackage[table]{xcolor}
+
+
+
+
 
 
 
@@ -256,5 +256,26 @@ Additionally, a \texttt{ForceField} or \texttt{PotentialCollection} container sh
 Finally, the architecture of \texttt{ForceField} should be build in such away that its easily extensible and can be composed with other containers having the same specification.
 
 \subsection{Constituents}
-\subsection{Overall Block Diagrams}
+\pagebreak
+\subsection{System Representation Diagrams}
+The overall block diagram of the \texttt{Topology} or \texttt{System} container can be represented via webgme metamodel as shown in Figure~\ref{fig:TopoDiagram}:
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\textwidth]{docs/topo}
+    \caption{Overall block diagram of the \texttt{Topology} or \texttt{System} Container drawn in webgme. In the diagram, the black lines with diamond endings show a containment relationship and the associated cardinality of the containment. The blue lines show a pointer or one--to--one association. The red lines show inheritance and pink lines show a set or one--to--many association. Some identifiable attributes for some of the classes are shown in the figure as well. Note that for example mass of an \texttt{Atom} is represented as a string signifying the unit system support. Additionally, the nodes with gray colored titles are meant to be abstract}
+    \label{fig:TopoDiagram}
+\end{figure}
+
+The overall block diagram of the \texttt{ForceField} container can be represented via webgme metamodel as shown in Figure~\ref{fig:FFDiagram}:
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\textwidth]{docs/pot}
+    \caption{Overall Block diagram of the \texttt{ForceField} container with different Potential variants}
+    \label{fig:FFDiagram}
+\end{figure}
+
+\section{Next Steps}
+\section{Conclusion}
 \end{document}
