@@ -1,0 +1,39 @@
+name: Build and Publish Github Pages
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: xu-cheng/latex-action@v2
+        with:
+          root_file: |
+            docs/report.tex
+          extra_system_packages: "py-pygments"
+          latexmk_shell_escape: true
+
+      - name: Install PDF2HTMLEX And Convert to HTML
+        run: |
+          wget https://github.com/pdf2htmlEX/pdf2htmlEX/releases/download/v0.18.8.rc1/pdf2htmlEX-0.18.8.rc1-master-20200630-Ubuntu-bionic-x86_64.deb
+          sudo apt install ./pdf2htmlEX-0.18.8.rc1-master-20200630-Ubuntu-bionic-x86_64.deb
+          pdf2htmlEX --zoom 1.5 report.pdf
+
+      - name: Copy Repository Content
+        run: |
+          mkdir public
+          cp -r docs/css docs/logo.jpeg docs/index.html report.html public
+
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GH_PAGES_DEPLOY_TOKEN }}
+          publish_dir: ./public
+        if: github.ref == 'refs/heads/main'

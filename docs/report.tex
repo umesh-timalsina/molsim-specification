@@ -1,0 +1,200 @@
+\documentclass[12pt]{article}
+\usepackage{titling}
+\usepackage[utf8]{inputenc}
+\usepackage[top=1in, bottom=1in, left=1in, right=1in]{geometry}
+\usepackage{hyperref}
+
+\title{General Purpose Molecular Simulation Object\\ System Requirements Specification (SRS)}
+\author{MoSDeF}
+\date{\today}
+
+\usepackage[table]{xcolor}
+
+\usepackage{natbib}
+\usepackage{graphicx}
+
+
+
+\begin{document}
+
+\begin{titlepage}
+	\centering
+	\includegraphics[width=0.15\textwidth]{docs/logo}\par\vspace{1cm}
+	{\scshape\LARGE MoSDeF \par}
+	\vspace{1cm}
+	{\scshape\Large System Requirements Specification\par}
+	\vspace{1.5cm}
+	{\huge\bfseries General Purpose Molecular Simulation Objects\par}
+	\vspace{1cm}
+	{\huge\bfseries Version 0.1\par}
+	\vspace{2cm}
+	{\Large\itshape Co Quach\par}
+	{\Large\itshape Justin Gilmer\par}
+	{\Large\itshape Parashara Shamaprasad\par}
+	{\Large\itshape Ray Matsumoto\par}
+	{\Large\itshape Umesh Timalsina\par}
+
+	\vfill
+
+% Bottom of the page
+	{\large \today\par}
+\end{titlepage}
+
+{\centering \section*{Overview}}
+
+The General Purpose Molecular Simulation Objects (\textbf{GPMSO}) will be a comprehensive representation of data types, capabilities and structural representation of an object needed to efficiently represent chemical topology/system which can be leveraged to write out files necessary for different simulation engines as well as cover heterogeneous domain of molecular dynamics. \\~\\
+The objectives of this \textbf{GPMSO} are:
+\begin{enumerate}
+    \item Have an efficient in--memory representation of different aspects of a chemical topology like \texttt{Atoms}, \texttt{Connections}, \texttt{Potential Forms}, \texttt{ForceFields} etc...
+    \item Have an efficient serialized/disk representation of the system which can be loaded to create an object and vice versa.
+    \item Have a convenient interface for extension/interfacing with other specifications in this realm.
+    \item Have support for mathematical expressions and parameters that would be used to represent different physical quantities, preferably with support for different unit systems.
+\end{enumerate}
+
+To that end, this document serves as a starting point for developers/ software scientists looking for standard practices and avoiding pitfalls in deigning/implementing a molecular simulation object.
+
+{\centering \section*{Revision History}}
+\begin{table}[ht]
+    \centering
+    \begin{tabular}{|c|c|c|c|}
+    \hline
+    \textbf{Date} &  \textbf{Version} & \textbf{Description}  & \textbf{Link} \\
+    \hline
+    \today & 0.1 & Initial Draft & click to follow \\
+    \hline
+    \end{tabular}
+\end{table}
+
+\pagebreak
+\tableofcontents
+\thispagestyle{empty}
+\pagebreak
+
+
+% Major Sections
+\section{Introduction}
+System requirements specification (\textbf{SRS}) for the General Purpose Molecular Simulation Objects (\textit{GPMSO}) are introduced in this section.
+
+\subsection{Specification Definition}
+This specification documents the system--level requirements for \textit{GPMSO}.
+
+\subsection{Specification Objectives}
+The objectives of this specification are:
+
+\begin{itemize}
+    \item Provide a system overview of the \textit{GPMSO} including definitions, goals, objectives, context and major capabilities.
+    \item To formally specify its associated:
+      \begin{itemize}
+          \item Functional requirements
+          \item Data requirements
+          \item Constraints
+      \end{itemize}
+\end{itemize}
+
+\subsection{Intended Audiences}
+The intended audiences for this document are:
+
+\begin{enumerate}
+    \item Software developers/Research Engineers/Research Scientists looking for high level overview of an molecular system object
+    \item Researchers using different simulation engines for their MD simulation
+\end{enumerate}
+
+\subsection{Specification Overview}
+% ToDO: Write this after Functional requirements
+
+\pagebreak
+\section{GPMSO System Overview}
+Any general purpose representation of a molecular system that could be leveraged for MD simulation purposes has following advantages:
+\begin{enumerate}
+    \item Support for multiple different chemistries allows for research groups/ labs not to rely on in house tools but rather harness the power of open--source development practices to solve in--house research problems
+    \item Single avenue for maintenance and extension
+    \item Possibility of a well maintained, documented open--source code base supporting the needs of a plethora of researchers/software developers working in the area with quick bug--fixes and scheduled releases
+\end{enumerate}
+
+To specify a typed system specification we need the following containers:
+
+\begin{enumerate}
+    \item The base container (\texttt{System} or \texttt{Topology}): A container object representing physical constructs as well as the necessary physics that define a molecular system.
+
+    \item The non-physical interaction container (\texttt{ForceField} or \texttt{PotentialCollection}): A container representing non-physical constructs like energies, functional forms of interactions etc… in a typed/parameterized molecular system.
+\end{enumerate}
+
+We should be able to create a \texttt{ForceField} or a container of Potentials from a \texttt{System} or \texttt{Topology} container (if they exist). The constituents, properties and capabilities of the containers are shown below (Section~\ref{def:Topology} and Section~\ref{def:Topology}).
+
+\subsection{Topology or System}
+\label{def:Topology}
+As mentioned earlier, a \texttt{Topology} or \texttt{System} is a collection of physical constructs that define a molecular system. To define a \texttt{Topology}/\texttt{System}, the following list (non-exhaustive) of attributes and methods are necessary (Table~\ref{tab:TopologySpec}):
+
+ \rowcolors{2}{gray!35}{white}
+\begin{table}[ht]
+    \centering
+     \caption{Typed Topology Representation}
+    \begin{tabular}{|l|}
+         \hline
+         \rowcolor{gray!50}
+         \texttt{Topology}/\texttt{System}  \\
+         \hline
+         \textbf{Constituents} \\
+         \texttt{Site} (0..n) \\
+         \texttt{Connection} (0..n)\\
+         \texttt{Potentials} (0..n)\\
+         \hline
+         \textbf{Properties}\\
+         \texttt{Metadata} \\
+         \hline
+         \textbf{Capabilities}\\
+         \hline
+         - Easy Lookup for constituents \\
+         - Positions Lookup \\
+         - Identifiable Connections \\
+         - Easy bookkeeping for Potentials/Functional forms \\
+         - Formal serialized representation (deterministic schema) \\
+         - Visualization \\
+         - Support for different file formats (dependent on the simulation engine) \\
+         - Interaction/Composition with other \texttt{Topology}/\texttt{System}\\
+         - Constituent datatype Validation \\
+         - Unit Support \\
+         - Extensible architecture \\
+         - Easy conversion to/and from other similar \texttt{System} objects\\
+        \hline
+
+    \end{tabular}
+    \label{tab:TopologySpec}
+\end{table}
+
+\subsubsection{Constituents}
+A topology container should have following constituents:
+\begin{itemize}
+    \item \texttt{Site}: \texttt{Site} represents any general interaction site in a molecular simulation. There can be any number of \texttt{Site} and their variants in a \texttt{Topology}/ \texttt{System} container.
+
+    \item \texttt{Connection}: A \texttt{Connection} stores data about connections between sites. There can be any number of \texttt{Connection} and its vairants in a \texttt{Topology}/\texttt{System} container.
+
+    \item \texttt{Potential}: \texttt{Potential} stores a general interaction between components of a chemical topology that can be specified by a mathematical expression and parameters. \texttt{Potentials} generally are generally associated with a typed \texttt{System}/ \texttt{Topology} container and there can by any number of \texttt{Potential} and its variants in it.
+\end{itemize}
+
+\subsubsection{Properties}
+Generally, the following properties should be associated with a \texttt{Topology}/ \texttt{System} container:
+
+\begin{itemize}
+    \item \texttt{Metadata}: Metadata regarding combining rules, units, parametric solvers etc...
+\end{itemize}
+
+\subsubsection{Capabilities}
+As described in Table~\ref{tab:TopologySpec}, a \texttt{Topology} or \texttt{System} should have easy lookup for its constituents based on identifiable boundaries like residues or chains, shared attributes of its constituents like all sites of a particular type or potentials of a particular type and many other constructs that might be relevant to molecular simulation. Lookup for constituents should facilitate conversion to other standard representation as well writers that generate files for different simulation engines. A \texttt{Topology} or \texttt{System} container should be able to locate every constituent \texttt{Site} within in 3D-Euclidean space and alter their positions.
+
+Additionally, A \texttt{Topology} or \texttt{System} container should also have a deterministic schema for its serialized representation such that a seamless conversion from disk--to--memory or memory--to--disk is possible. A \texttt{Topology} or \texttt{System} container should also have support for different file formats that are required by a diverse array of simulation engines and there should be relatively painless way of handling file--format support.
+
+Moreover, a \texttt{Topology} or \texttt{System} container should be able to support a \texttt{Graph} representation and thus associated visualization techniques.
+
+Additionally, a \texttt{System} or \texttt{Topology} container should be capable of validating constituent data types and provide support for representing physical quantities in different unit systems with preferred defaults.
+
+Furthermore, we should be able to get a \texttt{ForceField} or \texttt{PotentialCollection} container from a \texttt{Topology} representation.
+
+Finally, the architecture of the \texttt{Topology} or \texttt{System} container should be build in such a way that its easily extensible and be composed with other containers having the same specification.
+
+\subsection{ForceField or Potential Collection}
+\label{def:ForceField}
+
+\subsection{Constituents}
+\subsection{Overall Block Diagrams}
+\end{document}
