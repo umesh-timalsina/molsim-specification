@@ -259,7 +259,7 @@ Finally, the architecture of \texttt{PotentialCollection} should be built in suc
 \subsection{System Representation Diagrams}
 The overall block diagram of the \texttt{System} container can be represented via webgme metamodel as shown in Figure~\ref{fig:TopoDiagram}. In the diagram, the black lines with diamond endings show a containment relationship and the associated cardinality of the containment. The blue lines show a pointer or one--to--one association. The red lines show inheritance and pink lines show a set or one--to--many association. Some identifiable attributes for some of the classes are shown in the figure as well. Additionally, the nodes with gray colored titles are meant to be abstract.
 
-As shown in Figure~\ref{fig:TopoDiagram}, a \texttt{System} can contain any number of \texttt{Site}. \texttt{Atom}, \texttt{Bead} and \texttt{GenericSite} inherit from \texttt{Site}. A Bond has \texttt{src} and \texttt{dst} pointers that have to be an \texttt{Atom}. Similarly, a set of \texttt{connectionMembers} that \texttt{Atoms} with predefined cardanility are associated with each \texttt{Connection}.
+As shown in Figure~\ref{fig:TopoDiagram}, a \texttt{System} can contain any number of \texttt{Site}. \texttt{Atom}, \texttt{Bead} and \texttt{GenericSite} inherit from \texttt{Site}. A Bond has \texttt{src} and \texttt{dst} pointers that have to be an \texttt{Atom}. Similarly, a the set \texttt{connectionMembers} that contains fixed number of \texttt{Atoms}(predefined cardinality) is associated with each \texttt{Connection}.
 
 \begin{figure}[ht]
     \centering
