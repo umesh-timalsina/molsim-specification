@@ -113,6 +113,7 @@
 \end{frame}
 
 \section{Specification}
+\subsection{System}
 \begin{frame}{Specification: System}
 \rowcolors{2}{gray!35}{white}
 \begin{table}[ht]
@@ -156,6 +157,7 @@
 \end{table}
 \end{frame}
 
+\subsection{PotentialCollection}
 \begin{frame}{Specification: PotentialCollection}
 \rowcolors{2}{gray!35}{white}
 \begin{table}[ht]
@@ -190,6 +192,333 @@
     }
     \label{tab:TopologySpec}
 \end{table}
+\end{frame}
+
+\subsection{Constituents}
+\begin{frame}{Specification: Site}
+ \rowcolors{2}{gray!35}{white}
+\begin{table}[ht]
+    \centering
+    \begin{tabular}{|l|}
+         \hline
+         \rowcolor{gray!50}
+         \texttt{Site}  \\
+         \hline
+         \textbf{Associations} \\
+         \hline
+         \texttt{--> Potential}\\
+         \textbf{Properties}\\
+         \hline
+         \texttt{name} \\
+         \texttt{labels} \\
+         \texttt{position}\\
+         \texttt{Metadata}\\
+         \hline
+         \textbf{Capabilities}\\
+         \hline
+         - Datatype validation \\
+         - Standard serialized representation \\
+         - Easy look up for associated \texttt{Potential} \\
+         - Unit support \\
+        \hline
+    \end{tabular}
+    \label{tab:SiteSpec}
+\end{table}
+
+\end{frame}
+
+\begin{frame}{Site: Variants}
+\rowcolors{2}{gray!35}{white}
+\begin{table}[ht]
+    \centering
+    \begin{tabular}{|l|}
+         \hline
+         \rowcolor{gray!50}
+         \texttt{VirtualSite}  \\
+         \hline
+         \textbf{Associations} \\
+         \hline
+         \texttt{--> AtomType}\\
+         \textbf{Properties}\\
+         \hline
+         \texttt{charge} \\
+         \texttt{mass} \\
+         \texttt{position}\\
+         \texttt{...}\\
+         \hline
+         \textbf{Capabilities}\\
+         \hline
+         - A \texttt{Bond} (\texttt{Connection}) can associate\\
+         - ..\\
+        \hline
+    \end{tabular}
+
+\end{table}
+\end{frame}
+
+\begin{frame}{Site: Variants}
+\rowcolors{2}{gray!35}{white}
+\begin{table}[ht]
+    \centering
+    \begin{tabular}{|l|}
+         \hline
+         \rowcolor{gray!50}
+         \texttt{Atom}  \\
+         \hline
+         \textbf{Associations} \\
+         \hline
+         \texttt{--> AtomType}\\
+         \textbf{Properties}\\
+         \hline
+         \texttt{charge} \\
+         \texttt{mass} \\
+         \texttt{element}\\
+         \texttt{...}\\
+         \hline
+         \textbf{Capabilities}\\
+         \hline
+         - Associate with an \texttt{AtomType} (\texttt{Potential})\\
+         - A \texttt{Bond} (\texttt{Connection}) can associate\\
+        \hline
+    \end{tabular}
+\end{table}
+\end{frame}
+
+\begin{frame}{Specification: Connection}
+
+\rowcolors{2}{gray!35}{white}
+\begin{table}[ht]
+    \centering
+    %  \caption{\texttt{Connection} representation}
+    \begin{tabular}{|l|}
+         \hline
+         \rowcolor{gray!50}
+         \texttt{Connection}  \\
+         \hline
+         \textbf{Associations} \\
+         \hline
+         \texttt{--> Potential}\\
+         \texttt{--> Site (0..n)}\\
+         \textbf{Properties}\\
+         \hline
+         \texttt{name} \\
+         \texttt{Metadata}\\
+         \hline
+         \textbf{Capabilities}\\
+         \hline
+         - Datatype validation \\
+         - Standard serialized representation \\
+         - Easy look up for associated \texttt{Potential} \\
+         - Unit support \\
+         - Members query \\
+         - Duplication capabilities \\
+        \hline
+    \end{tabular}
+    \label{tab:ConnSpec}
+\end{table}
+
+\end{frame}
+
+\begin{frame}{Specification: Potential}
+\rowcolors{2}{gray!35}{white}
+\begin{table}[ht]
+    \centering
+    \begin{tabular}{|l|}
+         \hline
+         \rowcolor{gray!50}
+         \texttt{Potential}  \\
+         \hline
+         \textbf{Properties}\\
+         \hline
+         \texttt{name} \\
+         \texttt{expression} \\
+         \texttt{independent\_variables}\\
+         \texttt{Metadata}\\
+         \hline
+         \textbf{Capabilities}\\
+         \hline
+         - Datatype validation \\
+         - Standard serialized representation \\
+         - Unit support \\
+         - Chemical grammar support \\
+        \hline
+    \end{tabular}
+    \label{tab:PotSpec}
+\end{table}
+
+\end{frame}
+
+\begin{frame}{Connection: Variants}
+\rowcolors{2}{gray!35}{white}
+\begin{table}[ht]
+    \centering
+    \label{tab:ExampleConnections}
+
+ \begin{tabular}{|l|}
+
+         \hline
+         \rowcolor{gray!50}
+         \texttt{Improper}  \\
+         \hline
+         \textbf{Associations} \\
+         \hline
+         \texttt{--> ImproperType}\\
+         \texttt{--> Atom (3..3)}\\
+         \textbf{Properties}\\
+         \hline
+            ...\\
+             \texttt{...}\\
+         \hline
+         \textbf{Capabilities}\\
+         \hline
+         - Associate with an \texttt{ImproperType} (\texttt{Potential})\\
+        \hline
+    \end{tabular}
+\end{table}
+
+\end{frame}
+
+\begin{frame}{Connection: Variants}
+\rowcolors{2}{gray!35}{white}
+\begin{table}[ht]
+    \centering
+    \label{tab:ExampleConnections}
+
+\begin{tabular}{|l|}
+         \hline
+         \rowcolor{gray!50}
+         \texttt{Angle}  \\
+         \hline
+         \textbf{Associations} \\
+         \hline
+         \texttt{--> AngleType}\\
+          \texttt{--> Atom (3..3)}\\
+
+         \textbf{Properties}\\
+         \hline
+            ...\\
+         \texttt{...}\\
+         \hline
+         \textbf{Capabilities}\\
+         \hline
+         - Associate with a \texttt{BondType} (\texttt{Potential})\\
+         - Associate with an \texttt{Atom} (\texttt{Site})\\
+        \hline
+    \end{tabular}
+\end{table}
+
+\end{frame}
+
+\begin{frame}{Specification: Potential}
+
+\rowcolors{2}{gray!35}{white}
+\begin{table}[ht]
+    \centering
+    %  \caption{\texttt{Potential} representation}
+    \begin{tabular}{|l|}
+         \hline
+         \rowcolor{gray!50}
+         \texttt{Potential}  \\
+         \hline
+         \textbf{Properties}\\
+         \hline
+         \texttt{name} \\
+         \texttt{expression} \\
+         \texttt{independent\_variables}\\
+         \texttt{Metadata}\\
+         \hline
+         \textbf{Capabilities}\\
+         \hline
+         - Datatype validation \\
+         - Standard serialized representation \\
+         - Unit support \\
+         - Chemical grammar support \\
+        \hline
+    \end{tabular}
+    \label{tab:PotSpec}
+\end{table}
+\end{frame}
+
+
+\begin{frame}{Potential: Variants}
+
+\rowcolors{2}{gray!35}{white}
+\begin{table}[ht]
+    \centering
+    %  \caption{\texttt{Potential} representation}
+    \begin{tabular}{|l|}
+         \hline
+         \rowcolor{gray!50}
+         \texttt{BondType}  \\
+         \hline
+         \textbf{Properties}\\
+         \hline
+         parameters\\
+         \texttt{...}\\
+         \hline
+         \textbf{Capabilities}\\
+         \hline
+         - Avoid Duplication \\
+
+        \hline
+    \end{tabular}
+    \label{tab:PotSpec}
+\end{table}
+\end{frame}
+
+\begin{frame}{Potential: Variants}
+
+\rowcolors{2}{gray!35}{white}
+\begin{table}[ht]
+    \centering
+    %  \caption{\texttt{Potential} representation}
+    \begin{tabular}{|l|}
+         \hline
+         \rowcolor{gray!50}
+         \texttt{ParametricPotential}  \\
+         \hline
+
+         \textbf{Properties}\\
+         \hline
+            ...\\
+         \texttt{...}\\
+         \hline
+         \textbf{Capabilities}\\
+         \hline
+         - Parametrize\\
+        \hline
+    \end{tabular}
+    \label{tab:PotSpec}
+\end{table}
+\end{frame}
+
+\subsection{System Representation Diagrams}
+\begin{frame}[plain]{System Representation Diagrams (I)}
+
+\begin{figure}[]
+    \centering
+    \includegraphics[scale=0.28]{docs/topo}
+    \label{fig:TopoDiagram}
+\end{figure}
+\end{frame}
+
+\begin{frame}[plain]{System Representation Diagrams (II)}
+
+\begin{figure}[]
+    \centering
+    \includegraphics[scale=0.28]{docs/pot}
+    \label{fig:TopoDiagram}
+\end{figure}
+\end{frame}
+
+\section{Next Steps}
+\begin{frame}{Next Steps}
+    \begin{itemize}
+        \item What commonalities exist?
+        \item Further define the \texttt{PotentialCollection} file specification
+         \item Investigate non-represented systems
+
+    \end{itemize}
 \end{frame}
 
 \section{Conclusion}

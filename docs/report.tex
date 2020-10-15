@@ -9,6 +9,8 @@
 \usepackage{graphicx}
 \usepackage[table]{xcolor}
 
+\usepackage{caption}
+\usepackage{subcaption}
 
 
 
@@ -41,8 +43,7 @@
 \end{titlepage}
 
 {\centering \section*{Overview}}
-
-The General Purpose Molecular Simulation Objects (\textbf{GPMSO}) will be a comprehensive representation of data types, capabilities and structural representation of objects needed to efficiently represent chemical topology/system which can be leveraged to write out files necessary for different simulation engines as well as cover heterogeneous domains of molecular simulations. \\~\\
+\noindent The General Purpose Molecular Simulation Objects (\textbf{GPMSO}) will be a comprehensive representation of data types, capabilities and structural representation of objects needed to efficiently represent chemical topology/system which can be leveraged to write out files necessary for different simulation engines as well as cover heterogeneous domains of molecular simulations. \\~\\
 The objectives of this \textbf{GPMSO} are:
 \begin{enumerate}
     \item Have an efficient in--memory representation of different aspects of a chemical topology like \texttt{Sites}, \texttt{Connections}, \texttt{Potentials}, \texttt{ForceFields} etc...
@@ -97,7 +98,7 @@ The intended audiences for this document are:
     \item Software developers/Research Scientists/Engineers looking for high level overview of a molecular simulation object
     \item Researchers using different simulation engines for their molecular simulation
 \end{enumerate}
-
+eterized System Representat
 \subsection{Specification Overview}
 % ToDO: Write this after Functional requirements
 
@@ -127,7 +128,7 @@ As mentioned earlier, a \texttt{System} is a collection of physical constructs t
  \rowcolors{2}{gray!35}{white}
 \begin{table}[ht]
     \centering
-     \caption{Parameterized System Representation}
+     \caption{Parameterized \texttt{System} representation}
     \begin{tabular}{|l|}
          \hline
          \rowcolor{gray!50}
@@ -201,7 +202,7 @@ As mentioned earlier, a \texttt{PotentialCollection} is a non--physical interact
  \rowcolors{2}{gray!35}{white}
 \begin{table}[ht]
     \centering
-     \caption{PotentialCollection Representation}
+     \caption{\texttt{PotentialCollection} representation}
     \begin{tabular}{|l|}
          \hline
          \rowcolor{gray!50}
@@ -255,6 +256,381 @@ Additionally, a \texttt{PotentialCollection} container should be capable of vali
 Finally, the architecture of \texttt{PotentialCollection} should be built in such away that its easily extensible and can be composed with other containers having the same specification.
 
 \subsection{Constituents}
+This section describes the constituent members of the containers described in Sections~\ref{def:Topology} and \ref{def:ForceField}.
+
+\subsubsection{Site}
+\texttt{Site} represents any general interaction site in a molecular simulation. \texttt{Site} should be specified to be as general as possible, making no assumptions about representing atoms or beads, or having mass or charge. That is, a \texttt{Site} can represent an atom in an atomistic system, a bead in a coarse-grained system, and much more. A common abstraction for \texttt{Site} should be developed from gleaning common properties that different variants of a \texttt{Site} share.
+
+Table~\ref{tab:SiteSpec} shows  the constructs (associations, properties and capabilities) to define a \texttt{Site}.
+
+ \rowcolors{2}{gray!35}{white}
+\begin{table}[ht]
+    \centering
+     \caption{\texttt{Site} representation}
+    \begin{tabular}{|l|}
+         \hline
+         \rowcolor{gray!50}
+         \texttt{Site}  \\
+         \hline
+         \textbf{Associations} \\
+         \hline
+         \texttt{--> Potential}\\
+         \textbf{Properties}\\
+         \hline
+         \texttt{name} \\
+         \texttt{labels} \\
+         \texttt{position}\\
+         \texttt{Metadata}\\
+         \hline
+         \textbf{Capabilities}\\
+         \hline
+         - Datatype validation \\
+         - Standard serialized representation \\
+         - Easy look up for associated \texttt{Potential} \\
+         - Unit support \\
+        \hline
+    \end{tabular}
+    \label{tab:SiteSpec}
+\end{table}
+\paragraph{Associations}
+A directed one--to--one association from a  \texttt{Site} to its associated \texttt{Potential} can/should exist.
+\paragraph{Properties}
+\begin{itemize}
+    \item \texttt{name}: Identifier name of the \texttt{Site}
+    \item \texttt{labels}: Labels to add the \texttt{Site} to a group of \texttt{Sites}
+    \item \texttt{position}: The 3D--Cartesian coordinates of the \texttt{Site} when in the \texttt{System}
+    \item \texttt{Metadata}: Miscellaneous properties of the \texttt{Site}
+\end{itemize}
+\paragraph{Capabilities}
+Any \texttt{Site} and its variant should be capable of validating constituent data types and provide support for representing physical quantities in different unit systems with preferred defaults. With the requirement that \texttt{System} container in which the \texttt{Site} resides should support on disk serialization, a \texttt{Site} should have a standard serialized representation as well. Additionally, a \texttt{Site} should facilitate easy lookup for its associated \texttt{Potential} (if it exists).
+
+\paragraph{Example Variants} Some variants (non-exhaustive) of \texttt{Site} are shown in Table~\ref{tab:ExampleSites}.
+
+ \rowcolors{2}{gray!35}{white}
+\begin{table}[ht]
+    \centering
+    \caption{Example variants of \texttt{Site}}
+    \label{tab:ExampleSites}
+    \begin{subtable}[h]{0.45\textwidth}
+    \caption{\texttt{Atom}}
+    \begin{tabular}{|l|}
+         \hline
+         \rowcolor{gray!50}
+         \texttt{Atom}  \\
+         \hline
+         \textbf{Associations} \\
+         \hline
+         \texttt{--> AtomType}\\
+         \textbf{Properties}\\
+         \hline
+         \texttt{charge} \\
+         \texttt{mass} \\
+         \texttt{element}\\
+         \texttt{...}\\
+         \hline
+         \textbf{Capabilities}\\
+         \hline
+         - Associate with an \texttt{AtomType} (\texttt{Potential})\\
+         - A \texttt{Bond} (\texttt{Connection}) can associate\\
+        \hline
+    \end{tabular}
+    \end{subtable}
+    \hfill
+    \begin{subtable}[h]{0.45\textwidth}
+    \caption{\texttt{Bead}}
+    \begin{tabular}{|l|}
+
+         \hline
+         \rowcolor{gray!50}
+         \texttt{Bead}  \\
+         \hline
+         \textbf{Associations} \\
+         \hline
+         \texttt{--> AtomType}\\
+         \textbf{Properties}\\
+         \hline
+         \texttt{charge} \\
+         \texttt{mass} \\
+         \texttt{...}\\
+         \texttt{...}\\
+         \hline
+         \textbf{Capabilities}\\
+         \hline
+        - Associate with an \texttt{AtomType} (\texttt{Potential})\\
+        - A \texttt{Bond} (\texttt{Connection}) can associate\\
+        \hline
+    \end{tabular}
+    \end{subtable}
+    \newline
+    \vspace*{1 cm}
+    \newline
+    \begin{subtable}[h]{0.45\textwidth}
+    \caption{\texttt{VirtualSite}}
+    \begin{tabular}{|l|}
+
+         \hline
+         \rowcolor{gray!50}
+         \texttt{VirtualSite}  \\
+         \hline
+         \textbf{Associations} \\
+         \hline
+         \texttt{--> AtomType}\\
+         \textbf{Properties}\\
+         \hline
+         \texttt{charge} \\
+         \texttt{mass} \\
+         \texttt{position}\\
+         \texttt{...}\\
+         \hline
+         \textbf{Capabilities}\\
+         \hline
+         - A \texttt{Bond} (\texttt{Connection}) can associate\\
+         - ..\\
+        \hline
+    \end{tabular}
+    \end{subtable}
+
+\end{table}
+
+
+\pagebreak
+
+
+\subsubsection{Connection}
+A \texttt{Connection} stores data about connections between sites. Any connected groups (\texttt{Bonds}, \texttt{Angles}, \texttt{Dihedrals}, etc...) should be abstracted as a \texttt{Connection}. A common abstraction for \texttt{Connection} should be developed from gleaning common properties that different variants of a \texttt{Connection} share.
+
+Table~\ref{tab:ConnSpec} shows  the constructs (associations, properties and capabilities) to define a \texttt{Connection}.
+
+\rowcolors{2}{gray!35}{white}
+\begin{table}[ht]
+    \centering
+     \caption{\texttt{Connection} representation}
+    \begin{tabular}{|l|}
+         \hline
+         \rowcolor{gray!50}
+         \texttt{Connection}  \\
+         \hline
+         \textbf{Associations} \\
+         \hline
+         \texttt{--> Potential}\\
+         \texttt{--> Site (0..n)}\\
+         \textbf{Properties}\\
+         \hline
+         \texttt{name} \\
+         \texttt{Metadata}\\
+         \hline
+         \textbf{Capabilities}\\
+         \hline
+         - Datatype validation \\
+         - Standard serialized representation \\
+         - Easy look up for associated \texttt{Potential} \\
+         - Unit support \\
+         - Members query \\
+         - Duplication capabilities \\
+        \hline
+    \end{tabular}
+    \label{tab:ConnSpec}
+\end{table}
+
+\paragraph{Associations}
+\begin{itemize}
+    \item A directed one–to–one association from a \texttt{Connection} to its associated \texttt{Potential} can/should exist.
+    \item A directed one--to--many association from a \texttt{Connection} to its member \texttt{Sites} must exist.
+\end{itemize}
+\paragraph{Properties}
+\begin{itemize}
+    \item \texttt{name}: Identifier name of the \texttt{Site}
+    \item \texttt{Metadata}: Miscellaneous properties of the \texttt{Connection}
+\end{itemize}
+\paragraph{Capabilities}
+Any \texttt{Connection} and its variant should be capable of validating constituent data types and provide support for representing physical quantities in different unit systems with preferred defaults. With the requirement that \texttt{System} container in which the \texttt{Connection} resides should support on disk serialization, a \texttt{Connection} should have a standard serialized representation as well. A \texttt{Connection} should be also able to query its associated members.
+
+\paragraph{Example Variants}  Some variants (non-exhaustive) of \texttt{Connection} are shown in Table~\ref{tab:ExampleConnections}.
+
+\rowcolors{2}{gray!35}{white}
+\begin{table}[ht]
+    \centering
+    \caption{Example variants of \texttt{Connection}}
+    \label{tab:ExampleConnections}
+    \begin{subtable}[h]{0.45\textwidth}
+    \caption{\texttt{Bond}}
+    \begin{tabular}{|l|}
+         \hline
+         \rowcolor{gray!50}
+         \texttt{Bond}  \\
+         \hline
+         \textbf{Associations} \\
+         \hline
+         \texttt{--> BondType}\\
+          \texttt{--> Atom (2..2)}\\
+
+         \textbf{Properties}\\
+         \hline
+            ...\\
+         \texttt{...}\\
+         \hline
+         \textbf{Capabilities}\\
+         \hline
+         - Associate with a \texttt{BondType} (\texttt{Potential})\\
+         - Associate with an \texttt{Atom} (\texttt{Site})\\
+        \hline
+    \end{tabular}
+    \end{subtable}
+    \hfill
+    \begin{subtable}[h]{0.45\textwidth}
+       \caption{\texttt{Angle}}
+    \begin{tabular}{|l|}
+         \hline
+         \rowcolor{gray!50}
+         \texttt{Angle}  \\
+         \hline
+         \textbf{Associations} \\
+         \hline
+         \texttt{--> AngleType}\\
+          \texttt{--> Atom (3..3)}\\
+
+         \textbf{Properties}\\
+         \hline
+            ...\\
+         \texttt{...}\\
+         \hline
+         \textbf{Capabilities}\\
+         \hline
+         - Associate with a \texttt{BondType} (\texttt{Potential})\\
+         - Associate with an \texttt{Atom} (\texttt{Site})\\
+        \hline
+    \end{tabular}
+    \end{subtable}
+    \newline
+    \vspace*{1 cm}
+    \newline
+    \begin{subtable}[h]{0.45\textwidth}
+    \caption{\texttt{Improper}}
+    \begin{tabular}{|l|}
+
+         \hline
+         \rowcolor{gray!50}
+         \texttt{Improper}  \\
+         \hline
+         \textbf{Associations} \\
+         \hline
+         \texttt{--> ImproperType}\\
+         \texttt{--> Atom (3..3)}\\
+         \textbf{Properties}\\
+         \hline
+            ...\\
+             \texttt{...}\\
+         \hline
+         \textbf{Capabilities}\\
+         \hline
+         - Associate with an \texttt{ImproperType} (\texttt{Potential})\\
+        \hline
+    \end{tabular}
+    \end{subtable}
+
+\end{table}
+
+\pagebreak
+
+\subsubsection{Potential}
+\texttt{Potential} stores a general interaction between components of a chemical system that can be specified by a mathematical expression. The functional form of the potential together with the associated parameters should be stored in an efficient way by the \texttt{Potential}. \texttt{Potential} is agnostic to the instantiation of the potential, which can be e.g. a non-bonded potential, a bonded potential, an angle potential, a dihedral potential, etc...
+
+Table~\ref{tab:PotSpec} shows  the constructs (associations, properties and capabilities) to define a \texttt{Potential}.
+
+\rowcolors{2}{gray!35}{white}
+\begin{table}[ht]
+    \centering
+     \caption{\texttt{Potential} representation}
+    \begin{tabular}{|l|}
+         \hline
+         \rowcolor{gray!50}
+         \texttt{Potential}  \\
+         \hline
+         \textbf{Properties}\\
+         \hline
+         \texttt{name} \\
+         \texttt{expression} \\
+         \texttt{independent\_variables}\\
+         \texttt{Metadata}\\
+         \hline
+         \textbf{Capabilities}\\
+         \hline
+         - Datatype validation \\
+         - Standard serialized representation \\
+         - Unit support \\
+         - Chemical grammar support \\
+        \hline
+    \end{tabular}
+    \label{tab:PotSpec}
+\end{table}
+
+\paragraph{Associations}
+\begin{itemize}
+    \item A \texttt{Potential} doesn't have any association.
+\end{itemize}
+\paragraph{Properties}
+\begin{itemize}
+    \item \texttt{name}: Identifier name of the \texttt{Potential}
+    \item \texttt{Potential}: Miscellaneous properties of the \texttt{Potential}
+\end{itemize}
+\paragraph{Capabilities}
+Any \texttt{Potential} and its variant should be capable of validating constituent data types and provide support for representing physical quantities in different unit systems with preferred defaults. The data type validation capabilities include monitoring its mathematical expression along with their parameters, which may be available for some of the Variants.
+
+With the requirement that \texttt{System} container in which the \texttt{Potential} resides should support on disk serialization, a \texttt{Potential} should have a standard serialized representation as well.
+
+\paragraph{Example Variants}  Some variants (non-exhaustive) of \texttt{Potential} are shown in Table~\ref{tab:ExamplePotentials}.
+
+
+\rowcolors{2}{gray!35}{white}
+\begin{table}[ht]
+    \centering
+    \caption{Example variants of \texttt{Potential}}
+    \label{tab:ExampleConnections}
+    \begin{subtable}[h]{0.45\textwidth}
+    \centering
+    \caption{\texttt{BondType}}
+
+    \begin{tabular}{|l|}
+         \hline
+         \rowcolor{gray!50}
+         \texttt{BondType}  \\
+         \hline
+         \textbf{Properties}\\
+         \hline
+         parameters\\
+         \texttt{...}\\
+         \hline
+         \textbf{Capabilities}\\
+         \hline
+         - Avoid Duplication \\
+
+        \hline
+    \end{tabular}
+    \end{subtable}
+    \hfill
+    \begin{subtable}[h]{0.45\textwidth}
+       \caption{\texttt{ParametricPotential}}
+       \centering
+    \begin{tabular}{|l|}
+         \hline
+         \rowcolor{gray!50}
+         \texttt{ParametricPotential}  \\
+         \hline
+
+         \textbf{Properties}\\
+         \hline
+            ...\\
+         \texttt{...}\\
+         \hline
+         \textbf{Capabilities}\\
+         \hline
+         - Parametrize\\
+        \hline
+    \end{tabular}
+    \end{subtable}
+\end{table}
+
+
 \pagebreak
 \subsection{System Representation Diagrams}
 The overall block diagram of the \texttt{System} container can be represented via webgme metamodel as shown in Figure~\ref{fig:TopoDiagram}. In the diagram, the black lines with diamond endings show a containment relationship and the associated cardinality of the containment. The blue lines show a pointer or one--to--one association. The red lines show inheritance and pink lines show a set or one--to--many association. Some identifiable attributes for some of the classes are shown in the figure as well. Additionally, the nodes with gray colored titles are meant to be abstract.
@@ -278,5 +654,8 @@ As shown in Figure~\ref{fig:TopoDiagram}, a \texttt{System} can contain any numb
 \end{figure}
 
 \section{Next Steps}
+While this document provides an introductory specification, it falls short in details and doesn't cover many quirks for this specification to be representative. Next, we plan to investigate non--represented systems as well as further refine the \texttt{PotentialCollection} specification and revise this draft specification for completeness. We also plan to review specification developed by our colleagues at Open--ForceField, determine the shared goals and merge both specifications for a single shared specification.
+
 \section{Conclusion}
+This document specified \textbf{GPMSO} specification which can be leveraged to implement extensible base data structures to represent a general purpose molecular simulation object.
 \end{document}
