@@ -98,7 +98,7 @@ The intended audiences for this document are:
     \item Software developers/Research Scientists/Engineers looking for high level overview of a molecular simulation object
     \item Researchers using different simulation engines for their molecular simulation
 \end{enumerate}
-
+eterized System Representat
 \subsection{Specification Overview}
 % ToDO: Write this after Functional requirements
 
@@ -425,8 +425,9 @@ Table~\ref{tab:ConnSpec} shows  the constructs (associations, properties and cap
          - Standard serialized representation \\
          - Easy look up for associated \texttt{Potential} \\
          - Unit support \\
-         - Members Query \\
-         - Duplication Capabilities \\
+         - Members query \\
+         - Duplication capabilities \\
+
         \hline
     \end{tabular}
     \label{tab:ConnSpec}
@@ -657,6 +658,5 @@ As shown in Figure~\ref{fig:TopoDiagram}, a \texttt{System} can contain any numb
 While this document provides an introductory specification, it falls short in details and doesn't cover many quirks for this specification to be representative. Next, we plan to investigate non--represented systems as well as further refine the \texttt{PotentialCollection} specification and revise this draft specification for completeness. We also plan to review specification developed by our colleagues at Open--ForceField, determine the shared goals and merge both specifications for a single shared specification.
 
 \section{Conclusion}
-
-
+This document specified \textbf{GPMSO} specification which can be leveraged to implement extensible base data structures to represent a general purpose molecular simulation object.
 \end{document}
